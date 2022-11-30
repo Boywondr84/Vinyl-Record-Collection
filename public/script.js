@@ -4,9 +4,9 @@ var fetchButton = document.querySelector('#submit-button');
 var groupNameEl = document.getElementById('group-name');
 
 
-function getApi() {
+function getApi(artistName) {
 
-    var requestUrl = 'https://musicbrainz.org/ws/2/artist?fmt=json&query=rush&limit=2';
+    var requestUrl = 'https://musicbrainz.org/ws/2/artist?fmt=json&query=' + artistName +'&limit=2';
     fetch(requestUrl)
         .then((response) => response.json())
         .then(function (data) {
@@ -20,7 +20,8 @@ function getApi() {
 var formSubmitHandler = function (event) {
     event.preventDefault();
     var artistName = findArtistEl.value;
-    console.log(artistName);
+    // console.log(artistName);
+    getApi(artistName);
     findArtistEl.value = "";
 }
 
