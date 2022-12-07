@@ -23,8 +23,15 @@ function getApi(artistName) {
             
             for (var i = 0; i < data.results.length; i++) {
                 var filteredArtistName = data.results.filter(function (element) {
+                    if (element.artistName != artistName) {
+                        var errorArtistName = document.createElement('p');
+                        errorArtistName.textContent = "Check spelling and make sure the first letter(s) are capitalized"
+                        groupNameEl.appendChild(errorArtistName);
+                    }
                     return (element.artistName === artistName);
+                    
                 });
+                
                 console.log(filteredArtistName);
                 console.log(filteredArtistName[0].artistName + ' has an ID number of ' + filteredArtistName[0].artistId);
 
@@ -47,7 +54,7 @@ function getApi(artistName) {
             listItem.textContent = artistName + ' has an ID number of ' + filteredArtistName[0].artistId;
             groupNameEl.appendChild(listItem);
             // var albumCover = document.createElement('div');
-            // albumCover.textContent = data.results[0].artworkUrl100;
+            // albumCover.textContent = filteredArtistName[0].artworkUrl100;
             // albumImageEl.appendChild(albumCover);
         })
 }
