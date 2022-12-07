@@ -26,10 +26,8 @@ function getApi(artistName) {
                     return (element.artistName === artistName);
                 });
                 console.log(filteredArtistName);
-                // if (artistName === data.results[i].artistName) {
-                //     console.log(artistName);
-                    
-                // }
+                console.log(filteredArtistName[0].artistName + ' has an ID number of ' + filteredArtistName[0].artistId);
+
 
                 // after finding artistId, use this id to filter out albums.
                 // var artistIdNumbers = [data.results[i].artistId];
@@ -46,7 +44,7 @@ function getApi(artistName) {
             // var artistIdNum = data.results[0].artistId;
             // getAlbums();
             var listItem = document.createElement('li');
-            listItem.textContent = artistName;
+            listItem.textContent = artistName + ' has an ID number of ' + filteredArtistName[0].artistId;
             groupNameEl.appendChild(listItem);
             // var albumCover = document.createElement('div');
             // albumCover.textContent = data.results[0].artworkUrl100;
