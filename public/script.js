@@ -19,6 +19,9 @@ function getArtist(artist) {
                 data.artists.filter(function (element) {
                     if (element.name === artist && element.score === 100);
                     console.log(element.name + ' has an ID of ' + element.id);
+                    var artistIdNumber = element.id;
+                    // console.log(data);
+
 
                     // var artistIdNumber = filteredArtistName[0].id;
                     // var listItem = document.createElement('li');
@@ -29,17 +32,32 @@ function getArtist(artist) {
                     function getAlbums() {
                         var albumRequestUrl =
                             // 'https://itunes.apple.com/lookup?id=' + artistIdNumber + '&entity=album&limit=15';
-                            'https://musicbrainz.org/ws/2/release?fmt=json&query=' + artist + '&limit=15';
+                            'https://musicbrainz.org/ws/2/artist/' + artistIdNumber + '?fmt=json&inc=release-groups';
 
                         fetch(albumRequestUrl)
                             .then((response) => response.json())
                             .then(function (data) {
-                                for (var i = 0; i < data.releases.length; i <= 25) {
-                                    data.releases.filter(function (element) {
-                                        if (element.status === 'Official' && element.country === 'US')
-                                            console.log(element.id, element.media[0].format, element.date);
-                                    })
+                                // console.log(data['release-groups'][0].title);
+
+                                // HOW CAN I GRAB TITLE DATA FROM RELEASE-GROUPS???
+                                // ANSWER -- use ['-']
+                                for (var i = 0; i < data['release-groups'].length; i++) {
+                                    if (data['release-groups'][i]['primary-type'] === 'Album')
+                                    console.log(data['release-groups'][i].title, data['release-groups'][i].id);
                                 }
+                                
+                                // console.log(data.releasegroups[0].title)
+                                // albums = data.release-groups[i].title;
+                                
+                                //     data.release-groups.forEach(function (element) {
+                                //         if (element.status === 'Official' && element.packaging === 'Cardboard/Paper Sleeve' && element.primary-type === 'Album')
+                                //         console.log(element);
+                                //         console.log(element.id, element.first-release-date);
+                                
+                                //         if (element.country == "US" && element.media[0].format === '12\" Vinyl')
+                                //             console.log(element.id, element.media, element.date);
+                                    // })
+                                // }
 
 
                                 // for (var i = 1; i < data.results.length; i++) {
