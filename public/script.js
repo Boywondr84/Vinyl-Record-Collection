@@ -5,6 +5,9 @@ var groupNameEl = document.getElementById('group-name');
 var albumListEl = document.querySelector('#album-list');
 var artistIdNumber = '';
 
+var refreshPage = document.querySelector('#refresh-btn');
+var artistStudioAlbums = [];
+var artistCompAlbums = [];
 
 // USING MusicBrainz
 function getArtist(artist) {
@@ -25,52 +28,63 @@ function getArtist(artist) {
                 // console.log(data);
 
                 getAlbums();
+            }
+            function getAlbums() {
+                var albumRequestUrl =
+                    // 'https://itunes.apple.com/lookup?id=' + artistIdNumber + '&entity=album&limit=15';
+                    'https://musicbrainz.org/ws/2/artist/' + artistIdNumber + '?fmt=json&limit=40&inc=release-groups';
 
-                function getAlbums() {
-                    var albumRequestUrl =
-                        // 'https://itunes.apple.com/lookup?id=' + artistIdNumber + '&entity=album&limit=15';
-                        'https://musicbrainz.org/ws/2/artist/' + artistIdNumber + '?fmt=json&inc=release-groups';
+                fetch(albumRequestUrl)
+                    .then((response) => response.json())
+                    .then(function (data) {
+                        // console.log(data['release-groups'][0].title);
 
-                    fetch(albumRequestUrl)
-                        .then((response) => response.json())
-                        .then(function (data) {
-                            // console.log(data['release-groups'][0].title);
+                        // HOW CAN I GRAB TITLE DATA FROM RELEASE-GROUPS???
+                        // ANSWER -- use ['-']
+                        for (var i = 0; i < data['release-groups'].length; i++) {
+                            // var artistAlbumsId = data['release-groups'][i].id;
+                            // var artistAlbumsYear = [data['release-groups'][i]['first-release-date'].slice(0, 4)];
 
-                            // HOW CAN I GRAB TITLE DATA FROM RELEASE-GROUPS???
-                            // ANSWER -- use ['-']
-                            for (var i = 0; i < data['release-groups'].length; i++) {
-                                if (data['release-groups'][i]['primary-type'] === 'Album');
-                                var artistAlbumsTitle = data['release-groups'][i].title;
-                                var artistAlbumsId = data['release-groups'][i].id;
-                                var artistAlbumsYear = data['release-groups'][i]['first-release-date'].slice(0, 4);
-
-                                var artistAlbumList = document.createElement('ul');
-                                artistAlbumList.textContent = artistAlbumsTitle + ' released in  ' + artistAlbumsYear;
-                                albumListEl.appendChild(artistAlbumList);
-                                // console.log(artistAlbumsTitle, artistAlbumsYear, artistAlbumsId)
+                            if (data['release-groups'][i]['secondary-types'][0] === 'Compilation') {
+                                var artistCompAlbumsList = 'Compilation album ' + data['release-groups'][i].title + ' was released in ' + data['release-groups'][i]['first-release-date'].slice(0, 4);
+                                artistCompAlbums.push(artistCompAlbumsList);
+                            } else if (data['release-groups'][i]['secondary-types'][0] === 'Soundtrack') {
+                                var artistSoundtrackAlbums = 'Soundtrack album ' + data['release-groups'][i].title;
+                                // console.log(artistSoundtrackAlbums);
+                            } else if (data['release-groups'][i]['secondary-types'][0] === 'Live') {
+                                var artistLiveAlbums = 'Live album ' + data['release-groups'][i].title;
+                                // console.log(artistLiveAlbums);
+                            } else if (data['release-groups'][i]['secondary-types'][0] === 'Compilation' || (data['release-groups'][i]['secondary-types'][0] === 'Live')) {
+                                var artistLiveCompAlbums = 'Live compilation album ' +  data['release-groups'][i].title + ' was released in ' + data['release-groups'][i]['first-release-date'].slice(0, 4);
+                                // console.log(artistLiveCompAlbums);
+                            } else {
+                                (data['release-groups'][i]['secondary-types'] === '')
+                                var artistStudioAlbumsList = 'Studio album ' + data['release-groups'][i].title + ' was released in ' + data['release-groups'][i]['first-release-date'].slice(0, 4);
+                                artistStudioAlbums.push(artistStudioAlbumsList);
                             }
 
-                            //     data.release-groups.forEach(function (element) {
-                            //         if (element.status === 'Official' && element.packaging === 'Cardboard/Paper Sleeve' && element.primary-type === 'Album')
-                            //         console.log(element);
-                            //         console.log(element.id, element.first-release-date);
+                            var artistAlbumList = document.createElement('ul');
+                            artistAlbumList.textContent = artistStudioAlbums[i];
+                            albumListEl.appendChild(artistAlbumList);
+                            // console.log(artistAlbumsTitle, artistAlbumsYear, artistAlbumsId)
+                        }
 
-                            //         if (element.country == "US" && element.media[0].format === '12\" Vinyl')
-                            //             console.log(element.id, element.media, element.date);
-                            // })
-                            // }
+                        //     data.release-groups.forEach(function (element) {
+                        //         if (element.status === 'Official' && element.packaging === 'Cardboard/Paper Sleeve' && element.primary-type === 'Album')
+                        //         console.log(element);
+                        //         console.log(element.id, element.first-release-date);
 
+                        //         if (element.country == "US" && element.media[0].format === '12\" Vinyl')
+                        //             console.log(element.id, element.media, element.date);
+                        // })
+                        // }
+            })
+        }
+    })
+};
 
-                            // for (var i = 1; i < data.results.length; i++) {
-                            //     var artistAlbums = data.results[i].collectionName;
-                            //     // var artistAlbumsArtwork = data.results[i].artworkUrl100;
-                            //     console.log(artistAlbums);
-                            //     // console.log(artistAlbumsArtwork);
-                        })
-                }
-            }
-        })
-}
+// Refresh button for new search
+
 
 var formSubmitHandler = function (event) {
     event.preventDefault();
